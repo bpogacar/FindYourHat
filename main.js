@@ -49,9 +49,39 @@ class Field {
         }
     }
 
-    // method to randomly generate a field with a specified height, width, and hole percentage
-    static generateField(height, width, percentage) {
-        return
+    // method to randomly generate a field with a specified height, width
+    generateField(height, width) {
+        let needHat = true;
+        let grid = [];
+        for ( let i = 0 ; i < height ; i++ ) {
+            grid[i] = [];
+            for ( let j = 0 ; j < width ; j++ ) {
+                if ( j == this.playerX && i == this.playerY ) {  // change default values of playerX and playerY to change start pos
+                    grid[i][j] = pathCharacter;
+                    continue;
+                }
+                let tile = this.randomTile(needHat);
+                grid[i][j] = tile;
+                if (tile == hat) {
+                    needHat = false;
+                }
+            }
+        }
+        this.field = grid;
+    }
+
+    // method that randomly grabs a tile, it can only grab the hat if bool is true
+    randomTile(needHat) {
+        const tile = Math.floor(Math.random()*3);
+        switch (tile) {
+            case 0:
+                return hole;
+            case 1:
+                return fieldCharacter;
+            case 2:
+                if (needHat) { return hat; }
+                else { return fieldCharacter; }
+        }
     }
 }
 
@@ -76,11 +106,7 @@ let isOngoing = true;
 let currX = 0;
 let currY = 0;
 // create the gameboard
-const board = new Field([
-    [pathCharacter, fieldCharacter, hole],
-    [fieldCharacter, hole, fieldCharacter],
-    [fieldCharacter, hat, fieldCharacter]
-]);
+const board = new Field([[]]);
 
 const move = (direction) => {
     switch (direction) {
@@ -98,6 +124,38 @@ const move = (direction) => {
             break;
     }
 }
+
+// a method for gathering two integer inputs from the user and then generating the game board with them
+const randomBoard = () => {
+    let width;
+    let height;
+    let input;
+    // get the width from the user
+    console.log("Please specify the width you would like to play with.");
+    input = prompt("> ");
+    width = parseInt(input);
+
+    while (isNaN(width)) {
+        console.log("The width has to be a valid integer, please try again.");
+        input = prompt("> ");
+        width = parseInt(input);
+    }
+
+    // repeat the process for the height
+    console.log("Please specify the height you would like to play with.");
+    input = prompt("> ");
+    height = parseInt(input);
+    while (isNaN(height)) {
+        console.log("The height has to be a valid integer, please try again.");
+        input = prompt("> ");
+        height = parseInt(input);
+    }
+    // generate game board
+    board.generateField(height, width);
+}
+
+// ask the user for the dimensions of thier game board
+randomBoard();
 
 while(isOngoing) {
     // let the user view the current board

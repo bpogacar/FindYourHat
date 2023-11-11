@@ -68,6 +68,12 @@ class Field {
                 }
             }
         }
+        // whoops, there is a chance for there to never be a hat... let's fix that
+        if (needHat) {
+            const col = Math.ceil(Math.random()*(width-1));
+            const row = Math.ceil(Math.random()*(height-1));
+            grid[row][col] = hat;
+        }
         this.field = grid;
     }
 

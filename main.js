@@ -10,6 +10,7 @@ class Field {
     // constructor for the field class that takes a 2D array and stores it
     constructor(field) {
         this.field = field;
+        // CHANGE PLAYER X AND Y TO CHANGE THE START PLACEMENT OF THE PLAYER
         this.playerX = 0;
         this.playerY = 0;
     }

@@ -51,8 +51,7 @@ class Field {
     }
 
     // method to randomly generate a field with a specified height, width
-    generateField(height, width) {
-        let needHat = true;
+    generateField(height, width, percentage) {
         let grid = [];
         for ( let i = 0 ; i < height ; i++ ) {
             grid[i] = [];
@@ -61,34 +60,25 @@ class Field {
                     grid[i][j] = pathCharacter;
                     continue;
                 }
-                let tile = this.randomTile(needHat);
-                grid[i][j] = tile;
-                if (tile == hat) {
-                    needHat = false;
-                }
+                grid[i][j] = this.randomTile(percentage / 100);
             }
         }
-        // whoops, there is a chance for there to never be a hat... let's fix that
-        if (needHat) {
-            const col = Math.ceil(Math.random()*(width-1));
-            const row = Math.ceil(Math.random()*(height-1));
-            grid[row][col] = hat;
-        }
+    
+        // put in the hat at the end for better randomness
+        const col = Math.ceil(Math.random()*(width-1));
+        const row = Math.ceil(Math.random()*(height-1));
+        grid[row][col] = hat;
+
         this.field = grid;
     }
 
-    // method that randomly grabs a tile, it can only grab the hat if bool is true
-    randomTile(needHat) {
-        const tile = Math.floor(Math.random()*3);
-        switch (tile) {
-            case 0:
-                return hole;
-            case 1:
-                return fieldCharacter;
-            case 2:
-                if (needHat) { return hat; }
-                else { return fieldCharacter; }
+    // method that randomly grabs a hole or fieldCharacter with % percentage to get a hole
+    randomTile(percentage) {
+        const tile = Math.random();
+        if (tile <= percentage) {
+            return hole;
         }
+        return fieldCharacter;
     }
 }
 
@@ -157,8 +147,20 @@ const randomBoard = () => {
         input = prompt("> ");
         height = parseInt(input);
     }
+
+    // and for the percentage of holes you want to appear
+    console.log("Please specify the percent of holes you would like to appear on the board.");
+    input = prompt("> ");
+    percentage = parseInt(input);
+    while (isNaN(percentage) || percentage > 100 || percentage < 0) {
+        console.log("The percentage has to be a valid integer betweeen 0 and 100, please try again.");
+        input = prompt("> ");
+        height = parseInt(input);
+    }
+
+
     // generate game board
-    board.generateField(height, width);
+    board.generateField(height, width, percentage);
 }
 
 // ask the user for the dimensions of thier game board
